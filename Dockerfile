@@ -7,7 +7,7 @@ RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-
     cd /usr/local/bin && \
     ln -s /opt/poetry/bin/poetry && \
     poetry config virtualenvs.create false
-COPY ./app/pyproject.toml ./app/poetry.lock* /app/
+COPY ./pyproject.toml ./poetry.lock* /app/
 
 # Allow installing dev dependencies to run tests
 ARG INSTALL_DEV=false
@@ -19,8 +19,7 @@ RUN bash -c "if [ $INSTALL_DEV == 'true' ] ; then poetry install --no-root ; els
 ARG INSTALL_JUPYTER=false
 RUN bash -c "if [ $INSTALL_JUPYTER == 'true' ] ; then pip install jupyterlab ; fi"
 
-COPY ./app /app
+COPY . /app
 ENV PYTHONPATH=/app
 
-COPY . .
-CMD ["uvicorn", "sismos:api", "--port", "6200", "--host", "0.0.0.0"]
+CMD ["uvicorn", "sismos:app", "--port", "6200", "--host", "0.0.0.0"]
