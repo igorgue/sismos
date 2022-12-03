@@ -23,4 +23,4 @@ COPY ./app /app
 ENV PYTHONPATH=/app
 
 COPY . .
-CMD ["uvicorn", "sismos:api:app", "--port", "6200", "--host", "0.0.0.0"]
+CMD ["uvicorn", "sismos:api", "--port", "6200", "--host", "0.0.0.0"]
