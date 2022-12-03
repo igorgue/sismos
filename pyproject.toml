@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "sismos"
+version = "0.1.0"
+description = "Sismos log de los datos de INETER"
+authors = ["Igor Guerrero <igorgue@protonmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11"
+fastapi = "^0.88.0"
+twilio = "^7.15.4"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.0"
+ipython = "^8.7.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
