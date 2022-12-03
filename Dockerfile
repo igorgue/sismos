@@ -1,13 +1,13 @@
 # Dockerfile for my app, a fast api using python 3.11
-FROM python:3.11.0a5-alpine3.14
+FROM python:3.11-alpine
 WORKDIR /app
 
+# Install curl
+RUN apk add --no-cache curl bash
+
 # Install Poetry
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python && \
-    cd /usr/local/bin && \
-    ln -s /opt/poetry/bin/poetry && \
-    poetry config virtualenvs.create false
-COPY ./pyproject.toml ./poetry.lock* /app/
+RUN pip install poetry
+COPY ./pyproject.toml ./poetry.lock* /app
 
 # Allow installing dev dependencies to run tests
 ARG INSTALL_DEV=false
@@ -22,4 +22,6 @@ RUN bash -c "if [ $INSTALL_JUPYTER == 'true' ] ; then pip install jupyterlab ; f
 COPY . /app
 ENV PYTHONPATH=/app
 
-CMD ["uvicorn", "sismos:app", "--port", "6200", "--host", "0.0.0.0"]
+RUN poetry install --no-dev
+
+ENTRYPOINT [ "/app/run.sh" ]

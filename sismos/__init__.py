@@ -1,3 +1,5 @@
 """sismos - Earthquake data analysis."""
 
-from .api import app  # pyright: ignore
+from . import api
+
+app = api.app

@@ -11,8 +11,15 @@ log = getLogger(__name__)
 
 app = FastAPI()
 
+@app.get("/")
+async def root():
+    """
+    Root endpoint.
+    """
+    return {"message": "Hello World"}
+
 @app.post("/whatsapp/incoming")
-def whatsapp_incoming(_: Request):
+async def whatsapp_incoming(_: Request):
     """
     This is the webhook for incoming messages.
     """
@@ -23,7 +30,7 @@ def whatsapp_incoming(_: Request):
     return data
 
 @app.post("/whatsapp/status")
-def whatsapp_status(_: Request):
+async def whatsapp_status(_: Request):
     """
     This is the webhook for status updates.
     """

@@ -13,8 +13,8 @@ processes = []
 
 [[services]]
   http_checks = []
-  internal_port = 8080
-  processes = ["app"]
+  internal_port = 6200
+  processes = ["sismos.app"]
   protocol = "tcp"
   script_checks = []
   [services.concurrency]
