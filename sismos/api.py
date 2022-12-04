@@ -23,7 +23,7 @@ async def whatsapp_incoming(request: Request):
     """
     This is the webhook for incoming messages.
     """
-    log.info("request: %s", request.json())
+    log.info("request: %s", await request.body())
 
     data = {"message": "Sismos API (reply)"}
 
@@ -36,7 +36,7 @@ async def whatsapp_status(request: Request):
     """
     This is the webhook for status updates.
     """
-    log.info("request: %s", request.json())
+    log.info("request: %s", await request.body())
 
     data = {"message": "Sismos API (status)"}
 
