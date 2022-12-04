@@ -8,6 +8,6 @@ if [ -n "$RELOAD" ]; then
 fi
 
 poetry run uvicorn sismos:app --host 0.0.0.0 --port 6200 $RELOAD &
-# poetry run celery -A sismos worker -l info &
+poetry run celery -A sismos.tasks worker -l info &
 
 fg %1
