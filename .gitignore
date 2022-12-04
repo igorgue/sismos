@@ -26,3 +26,5 @@ archive.zip
 
 # project files
 .env
+
+celerybeat-schedule.*
