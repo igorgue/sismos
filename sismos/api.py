@@ -19,10 +19,12 @@ async def root():
     return {"message": "Hello World"}
 
 @app.post("/whatsapp/incoming")
-async def whatsapp_incoming(_: Request):
+async def whatsapp_incoming(request: Request):
     """
     This is the webhook for incoming messages.
     """
+    log.info("request: %s", request.json())
+
     data = {"message": "Sismos API (reply)"}
 
     log.info(data)
@@ -30,10 +32,12 @@ async def whatsapp_incoming(_: Request):
     return data
 
 @app.post("/whatsapp/status")
-async def whatsapp_status(_: Request):
+async def whatsapp_status(request: Request):
     """
     This is the webhook for status updates.
     """
+    log.info("request: %s", request.json())
+
     data = {"message": "Sismos API (status)"}
 
     log.info(data)
