@@ -3,9 +3,12 @@ api.py
 
 This is the api for the webhooks of Twilio's WhatsApp API.
 """
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
+
+from . import bot
 
 app = FastAPI()
+
 
 @app.get("/")
 async def root():
@@ -14,28 +17,29 @@ async def root():
     """
     return {"message": "Hello World"}
 
+
 @app.post("/whatsapp/incoming")
-async def whatsapp_incoming(request: Request):
+async def whatsapp_incoming(request: Request) -> Response:
     """
     This is the webhook for incoming messages.
     """
-    print(f"request: {await request.form()}")
+    message = str((await request.form()).get("Body", ""))
 
-    data = {"message": "Sismos API (reply)"}
+    response = bot.respond(message)
 
-    print(data)
+    return Response(response, media_type="application/xml")
 
-    return data
 
 @app.post("/whatsapp/status")
 async def whatsapp_status(request: Request):
     """
     This is the webhook for status updates.
     """
-    print(f"request: {await request.form()}")
-
-    data = {"message": "Sismos API (status)"}
+    data = await request.form()
 
     print(data)
+    # print(f"message: {(await request.form())['Body']}")
+    #
+    # data = {"message": "Sismos API (status)"}
 
-    return data
+    return {}

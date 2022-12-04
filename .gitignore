@@ -23,3 +23,6 @@ archive.zip
 # vim temporary files
 *~
 .*.sw?
+
+# project files
+.env
