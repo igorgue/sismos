@@ -90,11 +90,12 @@ def _get_last_sismos(db: Session) -> str:  # pylint: disable=invalid-name
             f"{sismo.location}. {time_ago}\n\n"
         )
 
-    sufix = (
-        "\n\nFuente: "
-        "https://ineter.gob.ni/articulos/areas-tecnicas/"
-        "geofisica/monitoreo-de-sismos-en-tiempo-real.html"
-    )
+    # sufix = (
+    #     "\n\nFuente: "
+    #     "https://ineter.gob.ni/articulos/areas-tecnicas/"
+    #     "geofisica/monitoreo-de-sismos-en-tiempo-real.html"
+    # )
+    sufix = "\n\nFuente: INETER (Nicaragua)"
 
     return prefix + content + sufix
 

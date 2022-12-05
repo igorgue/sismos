@@ -7,6 +7,7 @@ from fastapi import Depends, FastAPI, Request, Response
 from sqlalchemy.orm import Session
 
 from sismos.database import SessionLocal
+from sismos.models import Sismo
 
 from . import bot
 
@@ -17,7 +18,7 @@ def get_db():
     """
     Dependency to get a database session.
     """
-    db = SessionLocal()
+    db = SessionLocal()  # pylint: disable=invalid-name
     try:
         yield db
     finally:
@@ -25,11 +26,11 @@ def get_db():
 
 
 @app.get("/")
-async def root():
+async def root(db: Session = Depends(get_db)):  # pylint: disable=invalid-name
     """
     Root endpoint.
     """
-    return {"message": "Hello World"}
+    return Sismo.latest(db)
 
 
 @app.post("/whatsapp/incoming")

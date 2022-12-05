@@ -4,8 +4,8 @@ models.py
 This is the models file for the Sismos API.
 """
 
-from sqlalchemy import Column, DateTime, Float, Integer, String, insert
-from sqlalchemy.orm import Session
+from sqlalchemy import Column, DateTime, Float, Integer, String, desc, insert
+from sqlalchemy.orm import Query, Session
 
 from .database import Base
 
@@ -30,13 +30,20 @@ class Sismo(Base):  # pylint: disable=too-few-public-methods
     content_hash = Column(String, unique=True, index=True)
 
     @classmethod
+    def ordered(cls, db: Session) -> "Query['Sismo']":  # pylint: disable=invalid-name
+        """
+        Get the sismos ordered by created.
+        """
+        return db.query(cls).order_by(desc(cls.created))
+
+    @classmethod
     def latest(
         cls, db: Session, limit: int = 5  # pylint: disable=invalid-name
     ) -> list["Sismo"]:
         """
         Get the last sismos.
         """
-        return db.query(cls).limit(limit).all()
+        return cls.ordered(db).limit(limit).all()
 
     @classmethod
     def create_from(cls, db: Session, data: list[dict]):  # pylint: disable=invalid-name

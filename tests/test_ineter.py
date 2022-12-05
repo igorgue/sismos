@@ -37,7 +37,10 @@ def test_parse_html():
         first["location"] == "116 Km al sur de Acajutla"
     ), "The location should be correct"
     assert first["country"] == "El Salvador", "The country should be correct"
-    assert first["content_hash"] == "617216bf36050c6911b92a9d492b7625fa1c13e5e8f971e5b7e1a5bd1bac2778", "The content hash should be correct"
+    assert (
+        first["content_hash"]
+        == "617216bf36050c6911b92a9d492b7625fa1c13e5e8f971e5b7e1a5bd1bac2778"
+    ), "The content hash should be correct"
 
 
 def _get_test_content(filename: str) -> str:

@@ -11,6 +11,7 @@ models.Base.metadata.create_all(bind=database.engine)
 
 db = database.SessionLocal()  # pylint: disable=invalid-name
 
+
 def main():
     """
     Main function.
