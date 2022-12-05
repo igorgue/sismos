@@ -11,23 +11,13 @@ from bs4 import BeautifulSoup
 DATA_URL = "https://webserver2.ineter.gob.ni/geofisica/sis/events/sismos.php"
 
 
-def get_lines_from_api() -> list[dict]:
+def get_data_from_api() -> list[dict]:
     """
     Get the lines from the INETER's "API".
     """
     content = _fetch_data()
 
     return parse_html(content)
-
-
-def parse_html(content: str) -> list[dict]:
-    """
-    Get the lines from the INETER's "API".
-    """
-    soup = BeautifulSoup(content, "html.parser")
-    pres = list(soup.find_all("pre"))
-
-    return [_parse_pre(pre.text) for pre in pres]
 
 
 def hash_content(pre: str) -> str:
@@ -37,7 +27,17 @@ def hash_content(pre: str) -> str:
     return sha256(pre.encode()).hexdigest()
 
 
-def _parse_pre(pre: str) -> dict:
+def parse_html(content: str) -> list[dict]:
+    """
+    Get the lines from the INETER's "API".
+    """
+    soup = BeautifulSoup(content, "html.parser")
+    pres = list(soup.find_all("pre"))
+
+    return [parse_pre_item(pre.text) for pre in pres]
+
+
+def parse_pre_item(pre: str) -> dict:
     """
     Parse the pre tag.
     """
@@ -53,6 +53,8 @@ def _parse_pre(pre: str) -> dict:
     richter = parts[5]
     description = parts[6]
     location = " ".join(parts[7:])
+    country = location.rsplit(', ', maxsplit=1)[-1]
+    location = location.replace(f', {country}', '')
 
     data = {
         "datetime": local_time,
@@ -63,6 +65,7 @@ def _parse_pre(pre: str) -> dict:
         "description": description,
         "location": location,
         "content_hash": content_hash,
+        "country": country,
     }
 
     return data

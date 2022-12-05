@@ -24,5 +24,6 @@ class Sismo(Base):  # pylint: disable=too-few-public-methods
     richter = Column(Float, index=True)
     description = Column(String, index=True)
     location = Column(String, index=True)
+    country = Column(String, index=True)
 
     content_hash = Column(String, unique=True, index=True)
