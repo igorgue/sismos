@@ -7,12 +7,9 @@ from datetime import datetime
 from hashlib import sha256
 
 import httpx
-import pytz
 from bs4 import BeautifulSoup
 
 DATA_URL = "https://webserver2.ineter.gob.ni/geofisica/sis/events/sismos.php"
-
-timezone = pytz.timezone("America/Managua")
 
 
 def get_data_from_api() -> list[dict]:
@@ -61,9 +58,7 @@ def parse_pre_item(pre: str) -> dict:
     location = location.replace(f", {country}", "")
 
     # parse "22/12/04 16:06:29" to datetime
-    created = datetime.strptime(local_time, "%y/%m/%d %H:%M:%S").replace(
-        tzinfo=timezone
-    )
+    created = datetime.strptime(local_time, "%y/%m/%d %H:%M:%S")
 
     data = {
         "created": created,
