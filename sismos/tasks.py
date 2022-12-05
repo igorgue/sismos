@@ -46,6 +46,8 @@ def fetch_sismos_data():
     """
     data = get_data_from_api()
 
-    print(f"Adding {len(data)} sismos to the database.")
+    print(f"Recreating {len(data)} sismos to the database.")
 
-    models.Sismo.create_from(database.SessionLocal(), data)
+    db = database.SessionLocal()  # pylint: disable=invalid-name
+    models.Sismo.clear(db)
+    models.Sismo.create_from(db, data)

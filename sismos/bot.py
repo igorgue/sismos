@@ -4,9 +4,10 @@ bot.py
 This is the bot for the webhooks of Twilio's WhatsApp API.
 """
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
+from pytz import timezone
 from sqlalchemy.orm import Session
 from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
@@ -178,7 +179,8 @@ def datetime_to_time_ago_in_spanish(  # pylint: disable=too-many-return-statemen
     """
     assert date
 
-    now = datetime.now()
+    # datetime.now() with timezone from Nicaragua
+    now = datetime.now() - timedelta(hours=-6)
     diff = now - date
 
     if diff.days > 0:

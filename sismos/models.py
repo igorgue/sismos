@@ -56,3 +56,11 @@ class Sismo(Base):  # pylint: disable=too-few-public-methods
             db.execute(stmt.values(**item))
 
         db.commit()
+
+    @classmethod
+    def clear(cls, db: Session):
+        """
+        Clear the sismos.
+        """
+        db.query(cls).delete()
+        db.commit()
