@@ -169,9 +169,9 @@ def richter_scale_to_emoji(richter: str) -> str:
     return "🌋🌋🌋🌋🌋"
 
 
-def datetime_to_time_ago_in_spanish(
+def datetime_to_time_ago_in_spanish(  # pylint: disable=too-many-return-statements
     date: datetime,
-) -> str:  # pylint: disable=too-many-return-statements
+) -> str:
     """
     Convert the datetime to the time ago in spanish.
     """
