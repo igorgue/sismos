@@ -16,5 +16,4 @@ ARG INSTALL_DEV=false
 RUN bash -c "if [ $INSTALL_DEV == 'true' ] ; then poetry install --no-root ; else poetry install --no-root --no-dev ; fi"
 
 ENV PYTHONPATH=/app
-RUN "./fetch_initial_data.sh"
 CMD "/run.sh"
