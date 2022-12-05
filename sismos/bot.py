@@ -90,7 +90,11 @@ def _get_last_sismos(db: Session) -> str:  # pylint: disable=invalid-name
             f"{sismo.location}. {time_ago}\n\n"
         )
 
-    sufix = "\n\nFuente: https://www.ineter.gob.ni/sismos/"
+    sufix = (
+        "\n\nFuente: "
+        "https://ineter.gob.ni/articulos/areas-tecnicas/"
+        "geofisica/monitoreo-de-sismos-en-tiempo-real.html"
+    )
 
     return prefix + content + sufix
 
@@ -101,8 +105,8 @@ def _get_help() -> str:
     """
     return (
         "Comandos: [ultimos|ayuda], escala:\n\n"
-        "🌋: 0.0 - 1.9\n"
-        "🌋🌋: 2.0 - 3.9\n"
+        "🌋: 0.0 - 2.9\n"
+        "🌋🌋: 3.0 - 3.9\n"
         "🌋🌋🌋: 4.0 - 5.9\n"
         "🌋🌋🌋🌋: 6.0 - 6.9\n"
         "🌋🌋🌋🌋🌋: 7.0 - ..."
@@ -153,7 +157,7 @@ def richter_scale_to_emoji(richter: str) -> str:
     """
     ritcher = float(richter)
 
-    if ritcher <= 1.9:
+    if ritcher <= 2.9:
         return "🌋"
     if ritcher <= 3.9:
         return "🌋🌋"
@@ -165,7 +169,9 @@ def richter_scale_to_emoji(richter: str) -> str:
     return "🌋🌋🌋🌋🌋"
 
 
-def datetime_to_time_ago_in_spanish(date: datetime) -> str:
+def datetime_to_time_ago_in_spanish(
+    date: datetime,
+) -> str:  # pylint: disable=too-many-return-statements
     """
     Convert the datetime to the time ago in spanish.
     """
