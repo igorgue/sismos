@@ -9,12 +9,17 @@ import pytz
 from celery import Celery
 from dotenv import load_dotenv
 
+from sismos import database, models
+from sismos.ineter import get_data_from_api
+
 load_dotenv()
 
 REDIS_URL = os.getenv("REDIS_URL") or "redis://localhost:6379/0"
 
 app = Celery("tasks", broker=REDIS_URL)
 timezone = pytz.timezone("America/Managua")
+
+models.Base.metadata.create_all(bind=database.engine)
 
 assert app.on_after_configure is not None
 
@@ -39,4 +44,8 @@ def fetch_sismos_data():
     """
     Fetch data from the INETER's "API"
     """
-    print("Fetching data...")
+    data = get_data_from_api()
+
+    print(f"Adding {len(data)} sismos to the database.")
+
+    models.Sismo.create_from(database.SessionLocal(), data)

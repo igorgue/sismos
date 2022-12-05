@@ -24,7 +24,7 @@ def main():
 
     print(f"Adding {len(data)} sismos to the database.")
 
-    models.Sismo.create_from(db, data)  # type: ignore
+    models.Sismo.create_from(db, data)
 
 
 if __name__ == "__main__":
