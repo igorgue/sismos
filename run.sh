@@ -1,6 +1,8 @@
-#!/bin/env sh
+#!/bin/bash
 
 set -m
+
+cd "$(dirname "$0")"
 
 # use --reload and celery log level debug if $DEV is set
 if [ -n "$DEV" ]; then
