@@ -26,7 +26,7 @@ def setup_periodic_tasks(sender, **kwargs):
     """
     # add task to fetch data from the API every 5 minutes
     sender.add_periodic_task(
-        5.0,
+        5.0 * 60.0,
         fetch_sismos_data.s(),
         name="Fetch data every 5 seconds",
     )

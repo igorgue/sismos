@@ -28,3 +28,4 @@ archive.zip
 .env
 
 celerybeat-schedule.*
+sismos.db
