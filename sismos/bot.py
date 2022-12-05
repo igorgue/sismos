@@ -125,10 +125,12 @@ def country_to_flag_emoji(country: str) -> str:
         "Nicaragua": "🇳🇮",
         "Costa Rica": "🇨🇷",
         "Panama": "🇵🇦",
+        "Panamá": "🇵🇦",
         "Honduras": "🇭🇳",
         "El Salvador": "🇸🇻",
         "Guatemala": "🇬🇹",
         "Mexico": "🇲🇽",
+        "México": "🇲🇽",
     }
 
     return data.get(country, "")
