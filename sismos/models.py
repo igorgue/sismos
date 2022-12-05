@@ -30,11 +30,13 @@ class Sismo(Base):  # pylint: disable=too-few-public-methods
     content_hash = Column(String, unique=True, index=True)
 
     @classmethod
-    def latest(cls, limit: int = 5) -> list["Sismo"]:
+    def latest(
+        cls, db: Session, limit: int = 5  # pylint: disable=invalid-name
+    ) -> list["Sismo"]:
         """
         Get the last sismos.
         """
-        return cls.query(limit=limit).all()
+        return db.query(cls).limit(limit).all()
 
     @classmethod
     def create_from(cls, db: Session, data: list[dict]):  # pylint: disable=invalid-name

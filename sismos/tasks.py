@@ -33,7 +33,7 @@ def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(
         5.0 * 60.0,
         fetch_sismos_data.s(),
-        name="Fetch data every 5 seconds",
+        name="Fetch data every 5 minutes",
     )
 
     assert kwargs is not None
