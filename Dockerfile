@@ -5,7 +5,7 @@ COPY . /app
 
 WORKDIR /app
 
-RUN apk add --no-cache curl bash
+RUN apk add --no-cache curl bash sqlite
 
 ENV PATH=/root/.local/bin:$PATH
 

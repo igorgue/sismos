@@ -3,6 +3,8 @@ ineter.py
 
 This is the API for the INETER's "API".
 """
+from hashlib import sha256
+
 import httpx
 from bs4 import BeautifulSoup
 
@@ -28,10 +30,21 @@ def parse_html(content: str) -> list[dict]:
     return [_parse_pre(pre.text) for pre in pres]
 
 
+def hash_content(pre: str) -> str:
+    """
+    Generate a hash from the pre tag.
+    """
+    return sha256(pre.encode()).hexdigest()
+
+
 def _parse_pre(pre: str) -> dict:
     """
     Parse the pre tag.
     """
+    pre = pre.strip()
+
+    content_hash = hash_content(pre)
+
     parts = pre.split()
 
     local_time = " ".join(parts[0:2])
@@ -41,7 +54,7 @@ def _parse_pre(pre: str) -> dict:
     description = parts[6]
     location = " ".join(parts[7:])
 
-    return {
+    data = {
         "datetime": local_time,
         "lat": lat,
         "long": long,
@@ -49,7 +62,10 @@ def _parse_pre(pre: str) -> dict:
         "richter": richter,
         "description": description,
         "location": location,
+        "content_hash": content_hash,
     }
+
+    return data
 
 
 def _fetch_data() -> str:
