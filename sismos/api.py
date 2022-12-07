@@ -42,7 +42,7 @@ async def whatsapp_incoming(
     """
     message = str((await request.form()).get("Body", ""))
 
-    response = bot.respond(db, message)
+    response = bot.respond_with_ai(db, message)
 
     return Response(response, media_type="application/xml")
 

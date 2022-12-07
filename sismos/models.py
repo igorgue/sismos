@@ -30,6 +30,21 @@ class Sismo(Base):  # pylint: disable=too-few-public-methods
     content_hash = Column(String, unique=True, index=True)
 
     @classmethod
+    def exec_select_statement(
+        cls, db: Session, sql_stmt: str  # pylint: disable=invalid-name
+    ) -> list["Sismo"]:
+        """
+        Execute the query.
+        """
+        result = db.execute(sql_stmt)
+
+        data = result.all()
+
+        ids = [row[0] for row in data]
+
+        return cls.ordered(db).filter(cls.id.in_(ids)).all()
+
+    @classmethod
     def ordered(cls, db: Session) -> "Query['Sismo']":  # pylint: disable=invalid-name
         """
         Get the sismos ordered by created.

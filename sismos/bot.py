@@ -5,9 +5,12 @@ This is the bot for the webhooks of Twilio's WhatsApp API.
 """
 import os
 from datetime import datetime, timedelta
+from functools import lru_cache
+from string import Template
+from typing import Optional
 
+import openai
 from dotenv import load_dotenv
-from pytz import timezone
 from sqlalchemy.orm import Session
 from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
@@ -15,6 +18,8 @@ from twilio.twiml.messaging_response import MessagingResponse
 from sismos.models import Sismo
 
 load_dotenv()
+
+openai.api_key = os.getenv("OPENAI_API_KEY") or "YOUR_API_KEY"
 
 # Your Account SID from twilio.com/console
 account_sid = os.getenv("TWILIO_ACCOUNT_SID") or "YOUR_ACCOUNT_SID"
@@ -41,6 +46,51 @@ def respond(db: Session, message: str) -> str:  # pylint: disable=invalid-name
         response.message(_get_help())
 
     return response.to_xml()
+
+
+def respond_with_ai(db: Session, message: str) -> str:  # pylint: disable=invalid-name
+    """
+    Respond to the message with the given content.
+    """
+    response = MessagingResponse()
+    message = message.lower()
+    prompt = get_prompt_from_user(message)
+
+    ai_response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=prompt,
+        temperature=0.7,
+        max_tokens=150,
+    )
+
+    sql_stmt: str = ai_response["choices"][0]["text"]  # type: ignore
+    sql_stmt = sql_stmt.replace("\n", " ").strip()
+    response.message(_format_from_results(Sismo.exec_select_statement(db, sql_stmt)))
+
+    return response.to_xml()
+
+
+def get_prompt_from_user(prompt: str) -> str:
+    """
+    Get the prompt from the user.
+    """
+    assert prompt
+
+    return _get_template().safe_substitute(prompt=prompt)
+
+
+@lru_cache
+def _get_template() -> Template:
+    current_file_path = os.path.dirname(os.path.abspath(__file__))
+    filename = os.path.join(current_file_path, "query.ai.txt")
+    template_content: Optional[str] = None
+
+    with open(filename, "r", encoding="utf-8") as file:
+        template_content = file.read()
+
+    assert template_content, "Template is empty"
+
+    return Template(template_content)
 
 
 def _is_ultimos(message: str) -> bool:
@@ -77,10 +127,17 @@ def _get_last_sismos(db: Session) -> str:  # pylint: disable=invalid-name
     """
     assert db
 
+    return _format_from_results(Sismo.get_last_sismos(db))
+
+
+def _format_from_results(results: list[Sismo]) -> str:
+    """
+    Get the last sismos from the database.
+    """
     prefix = "Sismos: \n\n"
 
     content = ""
-    for sismo in Sismo.latest(db):
+    for sismo in results:
         country_emoji = country_to_flag_emoji(str(sismo.country))
         country_abbr = country_to_abbr(str(sismo.country))
         richter_emoji = richter_scale_to_emoji(str(sismo.richter))
@@ -146,10 +203,12 @@ def country_to_abbr(country: str) -> str:
         "Nicaragua": "NI",
         "Costa Rica": "CR",
         "Panama": "PA",
+        "Panamá": "PA",
         "Honduras": "HN",
         "El Salvador": "SV",
         "Guatemala": "GT",
         "Mexico": "MX",
+        "México": "MX",
     }
 
     return data.get(country, "")
