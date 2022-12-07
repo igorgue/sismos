@@ -41,6 +41,7 @@ async def whatsapp_incoming(
     This is the webhook for incoming messages.
     """
     message = str((await request.form()).get("Body", ""))
+    message = _sql_safe(message)
 
     response = bot.respond_with_ai(db, message)
 
@@ -58,3 +59,10 @@ async def whatsapp_status(request: Request):
     print(data)
 
     return {}
+
+
+def _sql_safe(text: str) -> str:
+    """
+    Make the given text safe for SQL.
+    """
+    return text.replace("'", "''").replace('"', "")
