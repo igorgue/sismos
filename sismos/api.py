@@ -41,7 +41,7 @@ async def whatsapp_incoming(
     This is the webhook for incoming messages.
     """
     message = str((await request.form()).get("Body", ""))
-    message = _sql_safe(message)
+    message = _ai_query_safe(message)
 
     response = bot.respond_with_ai(db, message)
 
@@ -61,8 +61,8 @@ async def whatsapp_status(request: Request):
     return {}
 
 
-def _sql_safe(text: str) -> str:
+def _ai_query_safe(user_query: str) -> str:
     """
-    Make the given text safe for SQL.
+    Make the given text safe for Open AI.
     """
-    return text.replace("'", "''").replace('"', "")
+    return user_query.replace("'", r"\'").replace('"', r'\"')

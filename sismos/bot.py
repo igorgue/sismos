@@ -65,7 +65,19 @@ def respond_with_ai(db: Session, message: str) -> str:  # pylint: disable=invali
 
     sql_stmt: str = ai_response["choices"][0]["text"]  # type: ignore
     sql_stmt = sql_stmt.replace("\n", " ").strip()
-    response.message(_format_from_results(Sismo.exec_select_statement(db, sql_stmt)))
+
+    print(f"SQL: {sql_stmt}")
+
+    if sql_stmt.lower().startswith("select *"):
+        response.message(
+            _format_from_results(Sismo.exec_select_statement(db, sql_stmt))
+        )
+    elif sql_stmt.lower().startswith("select count"):
+        response.message(
+            _format_from_simple_counts(Sismo.exec_select_count_statement(db, sql_stmt))
+        )
+    else:
+        response.message(_get_help())
 
     return response.to_xml()
 
@@ -83,7 +95,6 @@ def get_prompt_from_user(prompt: str) -> str:
 def _get_template() -> Template:
     current_file_path = os.path.dirname(os.path.abspath(__file__))
     filename = os.path.join(current_file_path, "query.ai.txt")
-    template_content: Optional[str] = None
 
     with open(filename, "r", encoding="utf-8") as file:
         template_content = file.read()
@@ -130,11 +141,16 @@ def _get_last_sismos(db: Session) -> str:  # pylint: disable=invalid-name
     return _format_from_results(Sismo.get_last_sismos(db))
 
 
+def _format_from_simple_counts(result: str) -> str:
+    content = f"{result}"
+
+    footer = "\n\nFuente: INETER (Nicaragua)"
+
+    return content + footer
+
+
 def _format_from_results(results: list[Sismo]) -> str:
-    """
-    Get the last sismos from the database.
-    """
-    prefix = "Sismos: \n\n"
+    header = "Sismos: \n\n"
 
     content = ""
     for sismo in results:
@@ -148,14 +164,14 @@ def _format_from_results(results: list[Sismo]) -> str:
             f"{sismo.location}. {time_ago}\n\n"
         )
 
-    # sufix = (
+    # footer = (
     #     "\n\nFuente: "
     #     "https://ineter.gob.ni/articulos/areas-tecnicas/"
     #     "geofisica/monitoreo-de-sismos-en-tiempo-real.html"
     # )
-    sufix = "\n\nFuente: INETER (Nicaragua)"
+    footer = "\n\nFuente: INETER (Nicaragua)"
 
-    return prefix + content + sufix
+    return header + content + footer
 
 
 def _get_help() -> str:
