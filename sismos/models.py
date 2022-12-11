@@ -32,9 +32,10 @@ class Location(Base):  # pylint: disable=too-few-public-methods
     __tablename__ = "locations"
 
     id = Column(Integer, primary_key=True)
+    created = Column(DateTime)
     name = Column(String, unique=True)
-    latitude = Column(Float)
-    longitude = Column(Float)
+    lat = Column(Float)
+    long = Column(Float)
 
     @classmethod
     def create_from(cls, db: Session, data: dict):  # pylint: disable=invalid-name

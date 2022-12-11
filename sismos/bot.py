@@ -67,7 +67,7 @@ def respond_with_ai(db: Session, message: str) -> str:  # pylint: disable=invali
 
     print(f"SQL: {sql_stmt}")
 
-    if sql_stmt.lower().startswith("select *"):
+    if sql_stmt.lower().startswith("select * from \"sismos\""):
         response.message(
             _format_from_results(Sismo.exec_select_statement(db, sql_stmt))
         )

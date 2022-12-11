@@ -1,0 +1,19 @@
+A "locations" table with all the states from Nicaragua, it does NOT include cities, is defined as:
+
+CREATE TABLE locations (
+	id INTEGER NOT NULL, 
+	created DATETIME, 
+    name VARCHAR,
+	lat FLOAT, 
+	long FLOAT, 
+	PRIMARY KEY (id)
+);
+
+Based on user prompt, create a sql query that will return the records that match the city in a like query.
+
+* the user might user phrases like "I am in Managua" or "Estoy en boaco"
+* if the user asks for a location not in Nicaragua, do not generate a SQL query but instead a string "NO_QUERY"
+
+This is the user prompt:
+
+"Jalapasss"
