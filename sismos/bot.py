@@ -7,7 +7,6 @@ import os
 from datetime import datetime, timedelta
 from functools import lru_cache
 from string import Template
-from typing import Optional
 
 import openai
 from dotenv import load_dotenv
@@ -15,7 +14,7 @@ from sqlalchemy.orm import Session
 from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 
-from sismos.models import Sismo
+from sismos.models import Sismo, exec_generic_statement
 
 load_dotenv()
 
@@ -74,7 +73,7 @@ def respond_with_ai(db: Session, message: str) -> str:  # pylint: disable=invali
         )
     elif sql_stmt.lower().startswith("select count"):
         response.message(
-            _format_from_simple_counts(Sismo.exec_select_count_statement(db, sql_stmt))
+            _format_from_simple_counts(exec_generic_statement(db, sql_stmt))
         )
     else:
         response.message(_get_help())

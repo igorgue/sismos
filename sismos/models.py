@@ -10,6 +10,50 @@ from sqlalchemy.orm import Query, Session
 from .database import Base
 
 
+def exec_generic_statement(
+    db: Session, sql_stmt: str  # pylint: disable=invalid-name
+) -> str:
+    """
+    Execute a count statement.
+    """
+    result = db.execute(sql_stmt).fetchall()
+
+    if not result:
+        return "?"
+
+    return "\n".join(str(item) for item in result)
+
+
+class Location(Base):  # pylint: disable=too-few-public-methods
+    """
+    Location model.
+    """
+
+    __tablename__ = "locations"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, unique=True)
+    latitude = Column(Float)
+    longitude = Column(Float)
+
+    @classmethod
+    def create_from(cls, db: Session, data: dict):  # pylint: disable=invalid-name
+        """
+        Create a location from a dictionary.
+        """
+
+        location = cls(
+            name=data["name"],
+            latitude=data["latitude"],
+            longitude=data["longitude"],
+        )
+
+        db.add(location)
+        db.commit()
+
+        return location
+
+
 class Sismo(Base):  # pylint: disable=too-few-public-methods
     """
     This is the Sismo model.
@@ -28,20 +72,6 @@ class Sismo(Base):  # pylint: disable=too-few-public-methods
     country = Column(String, index=True)
 
     content_hash = Column(String, unique=True, index=True)
-
-    @classmethod
-    def exec_select_count_statement(
-        cls, db: Session, sql_stmt: str  # pylint: disable=invalid-name
-    ) -> str:
-        """
-        Execute a count statement.
-        """
-        count = db.execute(sql_stmt).fetchone()
-
-        if not count:
-            return "?"
-
-        return str(count[0])
 
     @classmethod
     def exec_select_statement(
@@ -87,7 +117,7 @@ class Sismo(Base):  # pylint: disable=too-few-public-methods
         db.commit()
 
     @classmethod
-    def clear(cls, db: Session):
+    def clear(cls, db: Session):  # pylint: disable=invalid-name
         """
         Clear the sismos.
         """
