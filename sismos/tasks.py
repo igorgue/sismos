@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 
 from sismos import database, models
 from sismos.ineter import get_data_from_api
+from sismos.location import NICARAGUAN_STATES
 
 load_dotenv()
 
@@ -40,6 +41,18 @@ def setup_periodic_tasks(sender, **kwargs):
 
 
 @app.task
+def insert_location_data():
+    """
+    Insert location data into the database.
+    """
+    print(f"Recreating {len(NICARAGUAN_STATES.keys())} sismos to the database.")
+
+    db = database.SessionLocal()  # pylint: disable=invalid-name
+
+    models.Location.create_from(db, NICARAGUAN_STATES)
+
+
+@app.task
 def fetch_sismos_data():
     """
     Fetch data from the INETER's "API"
@@ -49,5 +62,8 @@ def fetch_sismos_data():
     print(f"Recreating {len(data)} sismos to the database.")
 
     db = database.SessionLocal()  # pylint: disable=invalid-name
+
+    # FIXME: this is not the best way to do this
+    # we should figure out how to match the data from the API
     models.Sismo.clear(db)
     models.Sismo.create_from(db, data)

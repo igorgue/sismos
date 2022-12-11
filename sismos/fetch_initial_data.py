@@ -38,16 +38,7 @@ def create_locations():
 
         return
 
-    for name, lat_long in NICARAGUAN_STATES.items():
-        location = models.Location(
-            name=name.title(),
-            latitude=lat_long[0],
-            longitude=lat_long[1],
-        )
-
-        db.add(location)
-
-    db.commit()
+    models.Location.create_from(db, NICARAGUAN_STATES)
 
 
 def main():

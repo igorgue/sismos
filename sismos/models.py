@@ -3,11 +3,15 @@ models.py
 
 This is the models file for the Sismos API.
 """
+from datetime import datetime
 
+import pytz
 from sqlalchemy import Column, DateTime, Float, Integer, String, desc, insert
 from sqlalchemy.orm import Query, Session
 
 from .database import Base
+
+timezone = pytz.timezone("America/Managua")
 
 
 def exec_generic_statement(
@@ -43,16 +47,16 @@ class Location(Base):  # pylint: disable=too-few-public-methods
         Create a location from a dictionary.
         """
 
-        location = cls(
-            name=data["name"],
-            latitude=data["latitude"],
-            longitude=data["longitude"],
-        )
-
-        db.add(location)
+        for state, (lat, long) in data.items():
+            db.add(
+                cls(
+                    created=datetime.now(timezone),
+                    name=state,
+                    lat=lat,
+                    long=long,
+                )
+            )
         db.commit()
-
-        return location
 
 
 class Sismo(Base):  # pylint: disable=too-few-public-methods
