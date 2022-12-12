@@ -53,7 +53,7 @@ def respond_with_ai(db: Session, message: str) -> str:  # pylint: disable=invali
     """
     response = MessagingResponse()
     message = message.lower()
-    prompt = get_prompt_from_user(message)
+    prompt = sismos_prompt_from_user(message)
 
     ai_response = openai.Completion.create(
         engine="text-davinci-002",
@@ -65,9 +65,9 @@ def respond_with_ai(db: Session, message: str) -> str:  # pylint: disable=invali
     sql_stmt: str = ai_response["choices"][0]["text"]  # type: ignore
     sql_stmt = sql_stmt.replace("\n", " ").strip()
 
-    print(f"SQL: {sql_stmt}")
+    print(f"Sismos SQL: {sql_stmt}")
 
-    if sql_stmt.lower().startswith("select * from \"sismos\""):
+    if sql_stmt.lower().startswith('select * from "sismos"'):
         response.message(
             _format_from_results(Sismo.exec_select_statement(db, sql_stmt))
         )
@@ -81,19 +81,28 @@ def respond_with_ai(db: Session, message: str) -> str:  # pylint: disable=invali
     return response.to_xml()
 
 
-def get_prompt_from_user(prompt: str) -> str:
+def sismos_prompt_from_user(prompt: str) -> str:
     """
     Get the prompt from the user.
     """
-    assert prompt
+    assert prompt, "The prompt cannot be empty"
 
-    return _get_template().safe_substitute(prompt=prompt)
+    return _get_template("query.sismos.ai.txt").safe_substitute(prompt=prompt)
+
+
+def locations_prompt_from_user(prompt: str) -> str:
+    """
+    Get the prompt from the user.
+    """
+    assert prompt, "The prompt cannot be empty"
+
+    return _get_template("query.locations.ai.txt").safe_substitute(prompt=prompt)
 
 
 @lru_cache
-def _get_template() -> Template:
+def _get_template(template_name: str) -> Template:
     current_file_path = os.path.dirname(os.path.abspath(__file__))
-    filename = os.path.join(current_file_path, "query.ai.txt")
+    filename = os.path.join(current_file_path, template_name)
 
     with open(filename, "r", encoding="utf-8") as file:
         template_content = file.read()

@@ -22,12 +22,12 @@ def test_parse_html():
     first = items[0]
 
     # "22/12/04 16:06:29", "The datetime should be correct"
-    assert first["created"].year == 2022
-    assert first["created"].month == 12
-    assert first["created"].day == 4
-    assert first["created"].hour == 16
-    assert first["created"].minute == 6
-    assert first["created"].second == 29
+    assert first["created"].year == 2022, "The year should be 2022"
+    assert first["created"].month == 12, "The month should be 12"
+    assert first["created"].day == 4, "The day should be 4"
+    assert first["created"].hour == 16, "The hour should be 16"
+    assert first["created"].minute == 6, "The minute should be 6"
+    assert first["created"].second == 29, "The second should be 29"
     assert first["lat"] == "12.590", "The latitude should be correct"
     assert first["long"] == "-90.132", "The longitude should be correct"
     assert first["depth"] == "5", "The depth should be correct"

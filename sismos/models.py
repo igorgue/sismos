@@ -58,6 +58,13 @@ class Location(Base):  # pylint: disable=too-few-public-methods
             )
         db.commit()
 
+    @classmethod
+    def get_coordinates(cls, db: Session, state: str):  # pylint: disable=invalid-name
+        """
+        Get the coordinates for a state.
+        """
+        return db.query(cls.lat, cls.long).filter(cls.name == state).first()
+
 
 class Sismo(Base):  # pylint: disable=too-few-public-methods
     """
