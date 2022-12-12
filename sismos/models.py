@@ -3,15 +3,10 @@ models.py
 
 This is the models file for the Sismos API.
 """
-from datetime import datetime
-
-import pytz
 from sqlalchemy import Column, DateTime, Float, Integer, String, desc, insert
 from sqlalchemy.orm import Query, Session
 
 from .database import Base
-
-timezone = pytz.timezone("America/Managua")
 
 
 def exec_generic_statement(
@@ -25,45 +20,9 @@ def exec_generic_statement(
     if not result:
         return "?"
 
+    x = 0
+
     return "\n".join(str(item) for item in result)
-
-
-class Location(Base):  # pylint: disable=too-few-public-methods
-    """
-    Location model.
-    """
-
-    __tablename__ = "locations"
-
-    id = Column(Integer, primary_key=True)
-    created = Column(DateTime)
-    name = Column(String, unique=True)
-    lat = Column(Float)
-    long = Column(Float)
-
-    @classmethod
-    def create_from(cls, db: Session, data: dict):  # pylint: disable=invalid-name
-        """
-        Create a location from a dictionary.
-        """
-
-        for state, (lat, long) in data.items():
-            db.add(
-                cls(
-                    created=datetime.now(timezone),
-                    name=state,
-                    lat=lat,
-                    long=long,
-                )
-            )
-        db.commit()
-
-    @classmethod
-    def get_coordinates(cls, db: Session, state: str):  # pylint: disable=invalid-name
-        """
-        Get the coordinates for a state.
-        """
-        return db.query(cls.lat, cls.long).filter(cls.name == state).first()
 
 
 class Sismo(Base):  # pylint: disable=too-few-public-methods

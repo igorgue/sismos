@@ -65,4 +65,4 @@ def _ai_query_safe(user_query: str) -> str:
     """
     Make the given text safe for Open AI.
     """
-    return user_query.replace("'", r"\'").replace('"', r'\"')
+    return user_query.replace("'", r"\'").replace('"', r"\"")

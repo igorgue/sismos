@@ -7,6 +7,7 @@ import os
 from datetime import datetime, timedelta
 from functools import lru_cache
 from string import Template
+from typing import Optional
 
 import openai
 from dotenv import load_dotenv
@@ -14,6 +15,7 @@ from sqlalchemy.orm import Session
 from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 
+from sismos.location import NICARAGUAN_STATES
 from sismos.models import Sismo, exec_generic_statement
 
 load_dotenv()
@@ -53,16 +55,35 @@ def respond_with_ai(db: Session, message: str) -> str:  # pylint: disable=invali
     """
     response = MessagingResponse()
     message = message.lower()
-    prompt = sismos_prompt_from_user(message)
 
-    ai_response = openai.Completion.create(
+    location_prompt = create_locations_ai_prompt(message)
+
+    ai_locations_response = openai.Completion.create(
         engine="text-davinci-002",
-        prompt=prompt,
+        prompt=location_prompt,
         temperature=0.7,
-        max_tokens=150,
+        max_tokens=50,
     )
 
-    sql_stmt: str = ai_response["choices"][0]["text"]  # type: ignore
+    if ai_locations_response["choices"][0]["text"] != "NO_LOCATION_PRESENT":  # type: ignore
+        sismos_prompt = create_sismos_ai_prompt(message)
+        ai_sismos_response = openai.Completion.create(
+            engine="text-davinci-002",
+            prompt=sismos_prompt,
+            temperature=0.7,
+            max_tokens=150,
+        )
+    else:
+        lat, long = NICARAGUAN_STATES[ai_locations_response["choices"][0]["text"]]  # type: ignore
+        sismos_prompt = create_sismos_ai_prompt(message, lat, long)
+        ai_sismos_response = openai.Completion.create(
+            engine="text-davinci-002",
+            prompt=sismos_prompt,
+            temperature=0.7,
+            max_tokens=150,
+        )
+
+    sql_stmt: str = ai_sismos_response["choices"][0]["text"]  # type: ignore
     sql_stmt = sql_stmt.replace("\n", " ").strip()
 
     print(f"Sismos SQL: {sql_stmt}")
@@ -81,22 +102,31 @@ def respond_with_ai(db: Session, message: str) -> str:  # pylint: disable=invali
     return response.to_xml()
 
 
-def sismos_prompt_from_user(prompt: str) -> str:
+def create_sismos_ai_prompt(
+    message: str, lat: Optional[float] = None, long: Optional[float] = None
+) -> str:
     """
-    Get the prompt from the user.
+    Get the prompt from the user for the sismos.
     """
-    assert prompt, "The prompt cannot be empty"
+    assert message, "The message cannot be empty"
 
-    return _get_template("query.sismos.ai.txt").safe_substitute(prompt=prompt)
+    if not lat or not long:
+        return _get_template("query.sismos.ai.txt").safe_substitute(prompt=message)
+
+    location_query = f"lat = {lat} and long = {long}"
+
+    return _get_template("query.sismos.ai.txt").safe_substitute(
+        prompt=message, extra_info=location_query
+    )
 
 
-def locations_prompt_from_user(prompt: str) -> str:
+def create_locations_ai_prompt(message: str) -> str:
     """
-    Get the prompt from the user.
+    Get the prompt from the user for location.
     """
-    assert prompt, "The prompt cannot be empty"
+    assert message, "The message cannot be empty"
 
-    return _get_template("query.locations.ai.txt").safe_substitute(prompt=prompt)
+    return _get_template("query.locations.ai.txt").safe_substitute(prompt=message)
 
 
 @lru_cache

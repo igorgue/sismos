@@ -20,7 +20,7 @@ CREATE TABLE sismos (
 * "richter" is a scale, so people might just call it "scale" or "escala".
 * if limit not found limit the query to 5 results, always order by created desc
 * please do not allow any SQL injections.
-
+$extra_info
 Create a SQL query using Sqlite3 syntax using my table for user prompt:
 
 "$prompt"
