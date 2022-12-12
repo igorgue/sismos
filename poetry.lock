@@ -549,14 +549,11 @@ test = ["hypothesis (>=5.5.3)", "pytest (>=6.0)", "pytest-xdist (>=1.31)"]
 
 [[package]]
 name = "pandas-stubs"
-version = "1.5.2.221124"
-description = "Type annotations for pandas"
+version = "1.2.0.62"
+description = "Type annotations for Pandas"
 category = "main"
 optional = false
-python-versions = ">=3.8,<3.12"
-
-[package.dependencies]
-types-pytz = ">=2022.1.1"
+python-versions = "*"
 
 [[package]]
 name = "parso"
@@ -928,14 +925,6 @@ pytz = "*"
 requests = ">=2.0.0"
 
 [[package]]
-name = "types-pytz"
-version = "2022.6.0.1"
-description = "Typing stubs for pytz"
-category = "main"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "typing-extensions"
 version = "4.4.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -989,8 +978,8 @@ python-versions = "*"
 
 [metadata]
 lock-version = "1.1"
-python-versions = "3.11.1"
-content-hash = "a05122db787436d65bc4014347d0da02e53914893b850d393db6f002f21f35c7"
+python-versions = "^3.11"
+content-hash = "317a3f278d3dfe0285bd8153c3353f56c03c4e735c9699ec3a8322534063531a"
 
 [metadata.files]
 amqp = [
@@ -1268,8 +1257,8 @@ pandas = [
     {file = "pandas-1.5.2.tar.gz", hash = "sha256:220b98d15cee0b2cd839a6358bd1f273d0356bf964c1a1aeb32d47db0215488b"},
 ]
 pandas-stubs = [
-    {file = "pandas-stubs-1.5.2.221124.tar.gz", hash = "sha256:d6bab9f373ff3c309bf560065d230a38ce4dcd22368be393fad6eb353d102b7c"},
-    {file = "pandas_stubs-1.5.2.221124-py3-none-any.whl", hash = "sha256:5a2c47a0cf8e12e113d760d5da9c48daa2b977b14a4c368b8bbff27dbfcfd2bb"},
+    {file = "pandas-stubs-1.2.0.62.tar.gz", hash = "sha256:89c022dad41d28e26a1290eb1585db1042ccb09e6951220bb5c9146e2f795147"},
+    {file = "pandas_stubs-1.2.0.62-py3-none-any.whl", hash = "sha256:32a9e04582173104d42c090135efacc64d70e08c003405455b7dfb1540bd7e6c"},
 ]
 parso = [
     {file = "parso-0.8.3-py2.py3-none-any.whl", hash = "sha256:c001d4636cd3aecdaf33cbb40aebb59b094be2a74c556778ef5576c175e19e75"},
@@ -1458,10 +1447,6 @@ traitlets = [
 twilio = [
     {file = "twilio-7.15.4-py2.py3-none-any.whl", hash = "sha256:699c5723d87141e0af3a8f79076b1f97acbdcf3287d384f2adf921e780e419df"},
     {file = "twilio-7.15.4.tar.gz", hash = "sha256:13a9eca9e1f06b5f01b8745274a233143198afba19cacd4522ae9e571916dfe5"},
-]
-types-pytz = [
-    {file = "types-pytz-2022.6.0.1.tar.gz", hash = "sha256:d078196374d1277e9f9984d49373ea043cf2c64d5d5c491fbc86c258557bd46f"},
-    {file = "types_pytz-2022.6.0.1-py3-none-any.whl", hash = "sha256:bea605ce5d5a5d52a8e1afd7656c9b42476e18a0f888de6be91587355313ddf4"},
 ]
 typing-extensions = [
     {file = "typing_extensions-4.4.0-py3-none-any.whl", hash = "sha256:16fa4864408f655d35ec496218b85f79b3437c829e93320c7c9215ccfd92489e"},

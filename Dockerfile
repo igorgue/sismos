@@ -1,11 +1,9 @@
 # Dockerfile for my app, a fast api using python 3.11
-FROM python:3.11.1-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
 COPY . .
-
-RUN apt-get install curl bash
 
 ENV PATH=/root/.local/bin:$PATH
 
