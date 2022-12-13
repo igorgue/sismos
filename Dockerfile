@@ -5,6 +5,9 @@ WORKDIR /app
 
 COPY . .
 
+RUN apt-get update -y
+RUN apt-get install curl -y
+
 ENV PATH=/root/.local/bin:$PATH
 
 RUN curl -sSL https://install.python-poetry.org | python3 -
