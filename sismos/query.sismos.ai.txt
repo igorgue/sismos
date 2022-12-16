@@ -17,10 +17,10 @@ CREATE TABLE sismos (
 * location field's ("sismos"."location") queries of the sismos table should be a "like query".
 * country names such as Panama and Panama with a tilde should work as well, so for it should add an extra condition, for Panamá OR Panama.
 * user prompt can be in any human language you understand but likely it would be Spanish.
-* "richter" is a scale, so people might just call it "scale" or "escala".
 * if limit not found limit the query to 5 results, always order by created desc
 * please do not allow any SQL injections.
-$extra_info
+* please only generate select statements
+
 Create a SQL query using Sqlite3 syntax using my table for user prompt:
 
 "$prompt"
