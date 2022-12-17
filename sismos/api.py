@@ -42,7 +42,7 @@ async def get_ai_response(
 
     Example with curl:
 
-    curl -X GET "http://localhost:6200/api?prompt=Hola"
+    curl -X GET "http://localhost:6200/api?prompt=Ultimos+3+sismos+en+Nicaragua"
     """
     response = bot.respond_with_ai(db, prompt)
 
@@ -59,7 +59,7 @@ async def whatsapp_incoming(
     message = str((await request.form()).get("Body", ""))
     message = _ai_query_safe(message)
 
-    response = bot.respond_with_ai(db, message)
+    response = bot.format_response_for_whatsapp(bot.respond_with_ai(db, message))
 
     return Response(response, media_type="application/xml")
 

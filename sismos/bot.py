@@ -53,7 +53,6 @@ def respond_with_ai(db: Session, message: str) -> str:  # pylint: disable=invali
     """
     Respond to the message with the given content.
     """
-    response = MessagingResponse()
     message = message.lower()
 
     location_prompt = create_locations_ai_prompt(message)
@@ -86,18 +85,33 @@ def respond_with_ai(db: Session, message: str) -> str:  # pylint: disable=invali
     sql_stmt: str = ai_sismos_response["choices"][0]["text"]  # type: ignore
     sql_stmt = sql_stmt.replace("\n", " ").strip()
 
+    select_index = sql_stmt.find("select")
+
+    if select_index == -1:
+        select_index = sql_stmt.find("SELECT")
+
+    if select_index > -1:
+        sql_stmt = sql_stmt[select_index:]
+
+    print(f"Prompt: {message}")
     print(f"Sismos SQL: {sql_stmt}")
 
-    if sql_stmt.lower().startswith('select * from "sismos"'):
-        response.message(
-            _format_from_results(Sismo.exec_select_statement(db, sql_stmt))
-        )
-    elif sql_stmt.lower().startswith("select count"):
-        response.message(
-            _format_from_simple_counts(exec_generic_statement(db, sql_stmt))
-        )
-    else:
-        response.message(_get_help())
+    if sql_stmt.lower().startswith("select"):
+        if "select count" in sql_stmt.lower():
+            return _format_from_simple_counts(exec_generic_statement(db, sql_stmt))
+
+        return _format_from_results(Sismo.exec_select_statement(db, sql_stmt))
+
+    return _get_help()
+
+
+def format_response_for_whatsapp(ai_response: str) -> str:
+    """
+    Format the response to the WhatsApp API.
+    """
+    response = MessagingResponse()
+
+    response.message(ai_response)
 
     return response.to_xml()
 

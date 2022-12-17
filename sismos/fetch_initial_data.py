@@ -6,7 +6,6 @@ so when we start the api we have some data to work with.
 """
 from sismos import database, models
 from sismos.ineter import get_data_from_api
-from sismos.location import NICARAGUAN_STATES
 
 models.Base.metadata.create_all(bind=database.engine)
 
@@ -29,24 +28,11 @@ def fetch_sismos():
     models.Sismo.create_from(db, data)
 
 
-def create_locations():
-    """
-    Create the locations for the sismos.
-    """
-    if db.query(models.Location).first() is not None:
-        print("The database already has items, skipping...")
-
-        return
-
-    models.Location.create_from(db, NICARAGUAN_STATES)
-
-
 def main():
     """
     Main function.
     """
     fetch_sismos()
-    create_locations()
 
 
 if __name__ == "__main__":
