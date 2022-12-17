@@ -3,6 +3,8 @@ api.py
 
 This is the api for the webhooks of Twilio's WhatsApp API.
 """
+import json
+
 from fastapi import Depends, FastAPI, Request, Response
 from sqlalchemy.orm import Session
 
@@ -69,12 +71,9 @@ async def whatsapp_status(request: Request):
     """
     This is the webhook for status updates.
     """
-    # TODO: Do this thing
     data = await request.form()
 
-    print(data)
-
-    return {}
+    return Response(json.dumps(data), media_type="application/xml")
 
 
 def _ai_query_safe(user_query: str) -> str:
