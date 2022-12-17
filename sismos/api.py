@@ -33,6 +33,22 @@ async def root(db: Session = Depends(get_db)):  # pylint: disable=invalid-name
     return Sismo.latest(db)
 
 
+@app.get("/api")
+async def get_ai_response(
+    prompt: str, db: Session = Depends(get_db)  # pylint: disable=invalid-name
+) -> dict:
+    """
+    Get the AI response for the given prompt.
+
+    Example with curl:
+
+    curl -X GET "http://localhost:6200/api?prompt=Hola"
+    """
+    response = bot.respond_with_ai(db, prompt)
+
+    return {"response": response}
+
+
 @app.post("/whatsapp/incoming")
 async def whatsapp_incoming(
     request: Request, db: Session = Depends(get_db)  # pylint: disable=invalid-name
