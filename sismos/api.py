@@ -32,6 +32,7 @@ async def root(db: Session = Depends(get_db)):  # pylint: disable=invalid-name
     """
     Root endpoint.
     """
+
     return Sismo.latest(db)
 
 
@@ -47,7 +48,6 @@ async def get_ai_response(
     curl -X GET "http://localhost:6200/api?prompt=Ultimos+3+sismos+en+Nicaragua"
     """
     response = bot.respond_with_ai(db, prompt)
-
     return {"response": response}
 
 
