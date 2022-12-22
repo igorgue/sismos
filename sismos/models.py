@@ -20,8 +20,6 @@ def exec_generic_statement(
     if not result:
         return "?"
 
-    x = 0
-
     return "\n".join(str(item) for item in result)
 
 

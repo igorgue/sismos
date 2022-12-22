@@ -7,16 +7,17 @@ cd "$(dirname "$0")"
 # use --reload and celery log level debug if $DEV is set
 if [ -n "$DEV" ]; then
     RELOAD="--reload"
-    CELERY_LOG_LEVEL="debug"
-else
-    CELERY_LOG_LEVEL="info"
 fi
 
 # initial scripts
 poetry run python sismos/fetch_initial_data.py
 
+# Add cronjob to fetch data every 5 minutes
+if [ -n "$IN_DOCKER" ]; then
+    echo '*/5 * * * * poetry run python sismos/fetch_initial_data.py' | crontab -
+fi
+
 # services
 poetry run uvicorn sismos:app --host 0.0.0.0 --port 6200 $RELOAD &
-poetry run celery -A sismos.tasks worker -B -l $CELERY_LOG_LEVEL &
 
 fg %1
