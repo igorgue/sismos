@@ -34,10 +34,10 @@ def partial_hash_content(data: dict) -> str:
     Generate a hash from the data partial matching
     """
     content = data["created"].strftime("%y/%m/%d %H:%M")
-    content.append(f"{float(data['lat']):0.1f}")
-    content.append(f"{float(data['long']):0.1f}")
-    content.append(data['location'][-10:])
-    content.append(data['country'])
+    content += f"{float(data['lat']):0.1f}"
+    content += f"{float(data['long']):0.1f}"
+    content += data['location'][-10:]
+    content += data['country']
 
     return sha256(content.encode()).hexdigest()
 
