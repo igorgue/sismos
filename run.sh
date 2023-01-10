@@ -1,10 +1,11 @@
 #!/bin/bash
 
+# enable job control
 set -m
 
 cd "$(dirname "$0")"
 
-# use --reload and celery log level debug if $DEV is set
+# use --reload in dev
 if [ -n "$DEV" ]; then
     RELOAD="--reload"
 fi

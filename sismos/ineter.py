@@ -7,6 +7,7 @@ from datetime import datetime
 from hashlib import sha256
 
 import httpx
+import pytz
 from bs4 import BeautifulSoup
 
 DATA_URL = "https://webserver2.ineter.gob.ni/geofisica/sis/events/sismos.php"
@@ -16,7 +17,7 @@ def get_data_from_api() -> list[dict]:
     """
     Get the lines from the INETER's "API".
     """
-    content = _fetch_data()
+    content = _ineter_fetch_data()
 
     return parse_html(content)
 
@@ -26,6 +27,19 @@ def hash_content(pre: str) -> str:
     Generate a hash from the pre tag.
     """
     return sha256(pre.encode()).hexdigest()
+
+
+def partial_hash_content(data: dict) -> str:
+    """
+    Generate a hash from the data partial matching
+    """
+    content = data["created"].strftime("%y/%m/%d %H:%M")
+    content.append(f"{float(data['lat']):0.1f}")
+    content.append(f"{float(data['long']):0.1f}")
+    content.append(data['location'][-10:])
+    content.append(data['country'])
+
+    return sha256(content.encode()).hexdigest()
 
 
 def parse_html(content: str) -> list[dict]:
@@ -59,6 +73,7 @@ def parse_pre_item(pre: str) -> dict:
 
     # parse "22/12/04 16:06:29" to datetime
     created = datetime.strptime(local_time, "%y/%m/%d %H:%M:%S")
+    # created = created.replace(tzinfo=pytz.timezone("America/Managua"))
 
     data = {
         "created": created,
@@ -72,10 +87,12 @@ def parse_pre_item(pre: str) -> dict:
         "country": country,
     }
 
+    data["partial_content_hash"] = partial_hash_content(data)
+
     return data
 
 
-def _fetch_data() -> str:
+def _ineter_fetch_data() -> str:
     """
     Do the request to the INETER's "API".
     """

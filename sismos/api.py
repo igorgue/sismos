@@ -48,6 +48,10 @@ async def get_ai_response(
     curl -X GET "http://localhost:6200/api?prompt=Ultimos+3+sismos+en+Nicaragua"
     """
     response = bot.respond_with_ai(db, prompt)
+
+    response_xml = bot.format_response_for_whatsapp(bot.respond_with_ai(db, prompt))
+
+    print(response_xml)
     return {"response": response}
 
 

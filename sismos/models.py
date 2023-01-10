@@ -41,6 +41,7 @@ class Sismo(Base):  # pylint: disable=too-few-public-methods
     country = Column(String, index=True)
 
     content_hash = Column(String, unique=True, index=True)
+    partial_content_hash = Column(String, unique=True, index=True)
 
     @classmethod
     def exec_select_statement(

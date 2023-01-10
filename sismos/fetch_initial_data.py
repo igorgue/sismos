@@ -28,10 +28,7 @@ def fetch_sismos():
     models.Sismo.create_from(db, data)
 
 
-def main():
-    """
-    Main function.
-    """
+def main():  # pylint: disable=missing-function-docstring
     fetch_sismos()
 
 
