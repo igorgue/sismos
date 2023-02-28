@@ -58,7 +58,7 @@ def respond_with_ai(db: Session, message: str) -> str:  # pylint: disable=invali
     location_prompt = create_locations_ai_prompt(message)
 
     ai_locations_response = openai.Completion.create(
-        engine="text-davinci-002",
+        engine="text-davinci-003",
         prompt=location_prompt,
         temperature=0.7,
         max_tokens=50,
@@ -67,7 +67,7 @@ def respond_with_ai(db: Session, message: str) -> str:  # pylint: disable=invali
     if ai_locations_response["choices"][0]["text"] != "NO_LOCATION_PRESENT":  # type: ignore
         sismos_prompt = create_sismos_ai_prompt(message)
         ai_sismos_response = openai.Completion.create(
-            engine="text-davinci-002",
+            engine="text-davinci-003",
             prompt=sismos_prompt,
             temperature=0.7,
             max_tokens=150,

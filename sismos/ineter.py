@@ -7,7 +7,6 @@ from datetime import datetime
 from hashlib import sha256
 
 import httpx
-import pytz
 from bs4 import BeautifulSoup
 
 DATA_URL = "https://webserver2.ineter.gob.ni/geofisica/sis/events/sismos.php"
